@@ -1,17 +1,36 @@
 #include <WiFi.h>
-WiFiClient client; //nome do cliente wifi
-const String SSID = "nome da rede"; //nome da rede wifi
-const String PASS = "senha da rede"; //senha da rede
+#include <PubSubClient.h>
+
+WiFiClient wifi_client;
+PubSubClient mqtt(wifi_client);
+
+const String SSID = "FIESC_IOT_EDU"; //nome da rede wifi
+const String PASS = "8120gv08"; //senha da rede
+
+const String brokerURL = "test.mosquitto.org";
+const int brokerPort = 1883;
+
+const String brokerUser = "";
+const String brokerPass = "";
 
 void setup() {
   Serial.begin(115200);
-  client.begin(nome, senha); //tenta conectar na rede
-  Serial.println("Conectado no WiFi");
-  while(client.status()! = WL_CONNECTED){
+  WiFi.begin(SSID, PASS); //tenta conectar na rede
+  Serial.println("Conectando no WiFi");
+  while(WiFi.status() != WL_CONNECTED){
     Serial.print(".");
     delay(200);
   }
-  // put your setup code here, to run once:
+  Serial.println("Conectado com sucesso!");
+
+  mqtt.setServer(brokerURL.c_str(),brokerPort);
+  String clientID = "S3_beatrizcercal";
+  clientID += String(random(0xffff),HEX);
+  while(mqtt.connect(clientID.c_str()) == 0){
+    Serial.print(".");
+    delay(200);
+  }
+  Serial.println("\nConectado ao broker!");
 
 }
 
