@@ -14,8 +14,12 @@ const String topic = "Miguel";
 const String brokerUser = "";
 const String brokerPass = "";
 
+const byte pinLED = 2; // 
+
 void setup() {
   Serial.begin(115200);
+  pinMode(pinLED, OUTPUT);
+  digitalWrite(pinLED, LOW);
   WiFi.begin(SSID, PASS);  
   Serial.println("Conectando no WiFi");
   while (WiFi.status() != WL_CONNECTED) {
@@ -39,14 +43,34 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   //Código para enviar para o servidor
-  String mensagem = "";                      
-  if (Serial.available() > 0) {               
-    mensagem = Serial.readStringUntil('\n');  
-    mensagem = "Miguel: " + mensagem;       
-    mqtt.publish("beatrizcercal",mensagem.c_str());
-  }
+  void loop() {
   mqtt.loop();
+
+  // Ler dados da Serial e enviar
+  if (Serial.available() > 0) {               
+    String mensagem = Serial.readStringUntil('\n');  
+    mensagem.trim(); // Remove quebras de linha extras
+    // Lógica para ligar/desligar o LED da dupla enviando uma mensagem em números true/false
+    if (mensagem == "1") {
+      digitalWrite(pinLED, HIGH);
+      Serial.println("LED LIGADO (comando serial)");
+      mqtt.publish(topic.c_str(), "LED ON");
+    } 
+    else if (mensagem == "0") {
+      digitalWrite(pinLED, LOW);
+      Serial.println("LED DESLIGADO (comando serial)");
+      mqtt.publish(topic.c_str(), "LED OFF");
+    } 
+    else {
+      String texto = "Miguel: " + mensagem;
+      mqtt.publish("beatrizcercal", texto.c_str());
+      Serial.print("Mensagem enviada: ");
+      Serial.println(texto);
+    }
+  }
 }
+}
+
 
 
 void callback(char* topic, byte* payload, unsigned long length) {
@@ -57,7 +81,9 @@ void callback(char* topic, byte* payload, unsigned long length) {
   Serial.println(mensagem_recebida); // Colocar o LED Pino2
 }
 
+
 void connecttoBroker(){
   Serial.println("Conectando ao broker...");
 }
+
 
