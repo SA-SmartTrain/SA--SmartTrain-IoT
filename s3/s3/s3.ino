@@ -42,6 +42,10 @@ void callback(char* topic, byte* payload, unsigned long lenght) {
 
   }
   Serial.println(MensagemRecebida);
+  if (msg == "1"){
+    digitalWrite(LED, high);
+    Serial.println("LED Ligado");
+  }
 }
 void loop() {
 
