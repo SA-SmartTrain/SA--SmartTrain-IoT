@@ -42,9 +42,13 @@ void callback(char* topic, byte* payload, unsigned long lenght) {
 
   }
   Serial.println(MensagemRecebida);
-  if (msg == "1"){
-    digitalWrite(LED, high);
-    Serial.println("LED Ligado");
+  if (mensagem == "1"){
+    digitalWrite(LED, high); //Condicional para ligar o LED
+    Serial.println("LED Ligado"); //Exibição no Monitor Serial
+  } else if (mensagem == "0"){
+    digitalWrite(LED, low); //Condicional para desligar o LED
+     Serial.println("LED Desligado"); //Exibição no Monitor Serial
+
   }
 }
 void loop() {
