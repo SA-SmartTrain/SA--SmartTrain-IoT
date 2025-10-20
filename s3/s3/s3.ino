@@ -11,6 +11,8 @@ const String brokerURL = "test.mosquitto.org";
 const int brokerPort = 1883;
 const String topic = "beatrizcercal";
 
+const int LED = 2; //Definição de pino referente ao LED
+
 const String brokerUser = "";
 const String brokerPass = "";
 
