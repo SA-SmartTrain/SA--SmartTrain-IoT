@@ -1,18 +1,14 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include "env.h"
 
 WiFiClient wifi_client;
 PubSubClient mqtt(wifi_client);
 
-const String SSID = "FIESC_IOT_EDU";  
-const String PASS = "8120gv08";       
-
-const String brokerURL = "test.mosquitto.org";
-const int brokerPort = 1883;
-const String topic = "Miguel";
-
+/*
 const String brokerUser = "";
 const String brokerPass = "";
+*/
 
 const byte pinLED = 2; // 
 
@@ -20,7 +16,7 @@ void setup() {
   Serial.begin(115200);
   pinMode(pinLED, OUTPUT);
   digitalWrite(pinLED, LOW);
-  WiFi.begin(SSID, PASS);  
+  WiFi.begin(WIFI_SSID, WIFI_PASS);  
   Serial.println("Conectando no WiFi");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
@@ -28,14 +24,14 @@ void setup() {
   }
   Serial.println("Conectado com sucesso!");
 
-  mqtt.setServer(brokerURL.c_str(), brokerPort);
+  mqtt.setServer(BROKER_URL.c_str(), BROKER_PORT);
   String clientID = "S4_MiguelRocha";
   clientID += String(random(0xffff), HEX);
   while (mqtt.connect(clientID.c_str()) == 0) {
     Serial.print(".");
     delay(2000);
   }
-  mqtt.subscribe(topic.c_str());
+  mqtt.subscribe(TOPIC_PRESENCE1.c_str());
   mqtt.setCallback(callback);
   Serial.println("\nConectado ao broker!");
 }
@@ -54,12 +50,12 @@ void loop() {
     if (mensagem == "1") {
       digitalWrite(pinLED, HIGH);
       Serial.println("LED LIGADO (comando serial)");
-      mqtt.publish(topic.c_str(), "LED ON");
+      mqtt.publish(TOPIC_PRESENCE1.c_str(), "LED ON");
     } 
     else if (mensagem == "0") { 
       digitalWrite(pinLED, LOW);
       Serial.println("LED DESLIGADO (comando serial)");
-      mqtt.publish(topic.c_str(), "LED OFF");
+      mqtt.publish(TOPIC_PRESENCE1.c_str(), "LED OFF");
     } 
     else {
       String texto = "Miguel: " + mensagem;
