@@ -1,6 +1,8 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
+const int ledPin = 2;
+
 WiFiClient wifi_client;
 PubSubClient mqtt(wifi_client);
 
@@ -16,6 +18,10 @@ const String brokerPass = "" ;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
+  pinMode(ledPin, OUTPUT);           // Mudei isso
+  digitalWrite(ledPin, LOW);         // Mudei isso
+  WiFi.begin(SSID, PASS);
+  Serial.println("Conectando no WiFi");
   WiFi.begin(SSID, PASS);
   Serial.println("Conectando no WiFi");
   while(WiFi.status() != WL_CONNECTED){
@@ -42,6 +48,9 @@ void loop() {
     mensagem = Serial.readStringUntil('\n');
     mensagem = "Iasmin: " + mensagem;
     mqtt.publish("Camafeu",mensagem.c_str());
+      if (mensagem=="1") {digitalWrite(LED,HIGH); mqtt.publish(topicPub,"LED ligado");}         // Mudei isso   
+  else if (mensagem=="0") {digitalWrite(LED,LOW); mqtt.publish(topicPub,"LED desligado");}     // Mudei isso
+}
   }
 mqtt.loop();
 }
@@ -57,3 +66,7 @@ void callback(char* topic, byte* payload, unsigned long length) {
 void connectToBrooker(){
   Serial.println("Conectado ao Brooker...");
 }
+
+
+
+
