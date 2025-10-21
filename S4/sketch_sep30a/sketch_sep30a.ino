@@ -56,7 +56,7 @@ void loop() {
       Serial.println("LED LIGADO (comando serial)");
       mqtt.publish(topic.c_str(), "LED ON");
     } 
-    else if (mensagem == "0") {
+    else if (mensagem == "0") { 
       digitalWrite(pinLED, LOW);
       Serial.println("LED DESLIGADO (comando serial)");
       mqtt.publish(topic.c_str(), "LED OFF");
