@@ -1,15 +1,9 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include "env.h"
 
 WiFiClient wifi_client;
 PubSubClient mqtt(wifi_client);
-
-const String SSID = "FIESC_IOT_EDU";  //nome da rede wifi
-const String PASS = "8120gv08";       //senha da rede
-
-const String brokerURL = "test.mosquitto.org";
-const int brokerPort = 1883;
-const String topic = "beatrizcercal";
 
 const int LED = 2; //Definição de pino referente ao LED
 
@@ -18,7 +12,7 @@ const String brokerPass = "";
 
 void setup() {
   Serial.begin(115200);
-  WiFi.begin(SSID, PASS);  //tenta conectar na rede
+  WiFi.begin( WIFI_SSID, WIFI_PASS);  //tenta conectar na rede
   Serial.println("Conectando no WiFi");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
@@ -26,14 +20,14 @@ void setup() {
   }
   Serial.println("Conectado com sucesso!");
 
-  mqtt.setServer(brokerURL.c_str(), brokerPort);
+  mqtt.setServer(BROKER_URL, BROKER_PORT);
   String clientID = "S3_beatrizcercal";
   clientID += String(random(0xffff), HEX);
   while (mqtt.connect(clientID.c_str()) == 0) {
     Serial.print(".");
     delay(200);
   }
-  mqtt.subscribe(topic.c_str());
+  mqtt.subscribe(TOPIC_PRESENCE1());
   mqtt.setCallback(callback);
   Serial.println("\nConectado ao broker!");
 }
