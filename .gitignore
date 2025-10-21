@@ -1,5 +1,6 @@
-# .files
+#all remove .h 
 
-*.ini
-
-db  /config.ini
+/S1/*.h
+/S2/*.h
+/S3/*.h
+/S4/*.h
