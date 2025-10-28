@@ -1,9 +1,9 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <WiFiClientSecure.h>
+#include "env.h"
 
-const int ledPin = 2;
-
-WiFiClient wifi_client;
+WiFiClientSecure wifi_client;
 PubSubClient mqtt(wifi_client);
 
 const String SSID = "FIESC_IOT_EDU";
@@ -18,6 +18,7 @@ const String brokerPass = "" ;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
+  wifi_client.setInsecure();
   pinMode(ledPin, OUTPUT);           // Mudei isso
   digitalWrite(ledPin, LOW);         // Mudei isso
   WiFi.begin(SSID, PASS);
