@@ -1,9 +1,10 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <PubSubClientSecure.h>
 #include "env.h"
 
 
-WiFiClient wifi_client;
+WiFiClientSecure wifi_client;
 PubSubClient mqtt(wifi_client);
 
 const String topic = "Camafeu";
@@ -17,6 +18,7 @@ const String brokerPass = "" ;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
+  wifi_client.setInsecure();
   WiFi.begin(WIFI_SSID, WIFI_PASS);
   Serial.println("Conectando no WiFi");
   while(WiFi.status() != WL_CONNECTED){
