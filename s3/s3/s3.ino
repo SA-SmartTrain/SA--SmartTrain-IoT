@@ -1,9 +1,10 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <WiFiClientSecure.h> //Inclusão de Biblioteca (hivemq)
 #include "env.h"
 
-WiFiClient wifi_client;
-PubSubClient mqtt(wifi_client);
+WiFiClientSecure wifi_client; //Criando Cliente WIFI
+PubSubClient mqtt(wifi_client); //Criando Cliente MQTT
 
 const int LED = 2; //Definição de pino referente ao LED
 
@@ -12,6 +13,7 @@ const String brokerPass = "";
 
 void setup() {
   Serial.begin(115200);
+  wifi_client.setInsecure(); //Broker ignorar o Certificado de Segurança/Autenticação
   WiFi.begin( WIFI_SSID, WIFI_PASS);  //tenta conectar na rede
   Serial.println("Conectando no WiFi");
   while (WiFi.status() != WL_CONNECTED) {
