@@ -7,6 +7,10 @@ WiFiClientSecure wifi_client; //Criando Cliente WIFI
 PubSubClient mqtt(wifi_client); //Criando Cliente MQTT
 
 const int LED = 2; //Definição de pino referente ao LED
+const servo1 = a0; //Definição do Pino referente ao Servo Motor 1;
+const servo2 = a0; //Definição do Pino referente ao Servo Motor 2;
+
+
 
 const String brokerUser = "";
 const String brokerPass = "";
@@ -31,7 +35,7 @@ void setup() {
   }
   mqtt.subscribe(TOPIC_PRESENCE1());
   mqtt.setCallback(callback);
-  Serial.println("\nConectado ao broker!");
+  Serial.println("\nConectado ao broker!"); //Mensagem de confirmação exibida no Monitor Serial
 }
 void callback(char* topic, byte* payload, unsigned long lenght) {
   String MensagemRecebida = "";
@@ -52,7 +56,7 @@ void callback(char* topic, byte* payload, unsigned long lenght) {
 void loop() {
 
   // put your main code here, to run repeatedly:
-  String mensagem = "";                       //Dentro do Loop, para recria-lá
+  String mensagem = "";                       //Dentro do Loop, para recriá-la
   if (Serial.available() > 0) {               //Caracteres disponíveis na "fila"
     mensagem = Serial.readStringUntil('\n');  //Leitura até "encontrar" o \n, palavra salva dentro da variável "mensagem"
     mensagem = "Beatriz: " + mensagem;       //exibição ao leitor
