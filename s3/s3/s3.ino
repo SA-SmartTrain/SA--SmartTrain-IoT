@@ -2,6 +2,7 @@
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h> //Inclusão de Biblioteca (hivemq)
 #include "env.h"
+#include <ESP32Servo.h>// Inclusão de Biblioteca Servo Motor
 
 WiFiClientSecure wifi_client; //Criando Cliente WIFI
 PubSubClient mqtt(wifi_client); //Criando Cliente MQTT
@@ -10,6 +11,9 @@ const int LED = 2; //Definição de pino referente ao LED
 const servo1 = a0; //Definição do Pino referente ao Servo Motor 1;
 const servo2 = a0; //Definição do Pino referente ao Servo Motor 2;
 
+Servo servo1; //Servo Motor 1
+Servo servo2; //Servo Motor 2
+
 
 
 const String brokerUser = "";
@@ -17,6 +21,12 @@ const String brokerPass = "";
 
 void setup() {
   Serial.begin(115200);
+  servo1.attach(servo1); //Definição do pino Servo Motor 1;
+    servo2.attach(servo2); //Definição do pino Servo Motor 2;
+    servo1.write(0); //Posição inicial;
+    servo2.write(0);//Posição inicial;
+
+
   wifi_client.setInsecure(); //Broker ignorar o Certificado de Segurança/Autenticação
   WiFi.begin( WIFI_SSID, WIFI_PASS);  //tenta conectar na rede
   Serial.println("Conectando no WiFi");
@@ -34,6 +44,9 @@ void setup() {
     delay(200);
   }
   mqtt.subscribe(TOPIC_PRESENCE1());
+  mqtt.subcribe(TOPIC_SERVO1()); 
+    mqtt.subcribe(TOPIC_SERVO2());
+
   mqtt.setCallback(callback);
   Serial.println("\nConectado ao broker!"); //Mensagem de confirmação exibida no Monitor Serial
 }
