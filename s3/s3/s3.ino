@@ -55,6 +55,19 @@ void callback(char* topic, byte* payload, unsigned long lenght) {
   for (int i = 0; i < lenght; i++){
     MensagemRecebida += (char) payload[i]; //Cada letra de payload e junta na mensagem
 
+String topicStr = String(topic);
+if (topicStr == TOPIC_SERVO1) { //Condicional referente ao Servo Motor 1;
+  int angulo = 90; //Definição do ângulo solicitado;
+  servo1.write(angle);//Movimentação;
+  mqtt.publish(TOPIC_STATE_SERVO1, String(angulo).c_str()); //Publicação do estado do Servo Motor 1;
+  return;
+} else if (topicStr == TOPIC_SERVO2) { //Condicional referente ao Servo Motor 2;
+  int angulo = 90; //Definição do ângulo solicitado;
+  servo2.write(angle); //Movimentação;
+  mqtt.publish(TOPIC_STATE_SERVO2, String(angulo).c_str()); //Publicação do estado do Servo Motor 2;
+  return;
+}
+
   }
   Serial.println(MensagemRecebida);
   if (mensagem == "1"){
