@@ -10,6 +10,7 @@ PubSubClient mqtt(wifi_client); //Criando Cliente MQTT
 const int LED = 2; //Definição de pino referente ao LED
 const servo1 = a0; //Definição do Pino referente ao Servo Motor 1;
 const servo2 = a0; //Definição do Pino referente ao Servo Motor 2;
+const int iluminacao_led = a0; //Definição do Pino referente ao LED de iluminação;
 
 Servo servo1; //Servo Motor 1
 Servo servo2; //Servo Motor 2
