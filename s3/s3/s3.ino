@@ -1,7 +1,7 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h> //Inclusão de Biblioteca (hivemq)
-#include "env.h"
+#include "env.h" //Variáveis, inseridas no gitignore
 #include <ESP32Servo.h>// Inclusão de Biblioteca Servo Motor
 
 WiFiClientSecure wifi_client; //Criando Cliente WIFI
