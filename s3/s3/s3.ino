@@ -26,6 +26,7 @@ void setup() {
     servo2.attach(servo2); //Definição do pino Servo Motor 2;
     servo1.write(0); //Posição inicial;
     servo2.write(0);//Posição inicial;
+    pinMode(iluminacao_led, OUTPUT);//Definição do pino de LED como saída;
 
 
   wifi_client.setInsecure(); //Broker ignorar o Certificado de Segurança/Autenticação
