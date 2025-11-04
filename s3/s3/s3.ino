@@ -7,10 +7,9 @@
 WiFiClientSecure wifi_client; //Criando Cliente WIFI
 PubSubClient mqtt(wifi_client); //Criando Cliente MQTT
 
-const int LED = 2; //Definição de pino referente ao LED
+const int LED = a0; //Definição de pino referente ao LED
 const servo1 = a0; //Definição do Pino referente ao Servo Motor 1;
 const servo2 = a0; //Definição do Pino referente ao Servo Motor 2;
-const int iluminacao_led = a0; //Definição do Pino referente ao LED de iluminação;
 const byte TRIGGER_PIN = a0; //Definição do Pino referente ao Sensor Ultrassônico;
 const byte ECHO_PIN = a0; //Definição do Pino referente ao Sensor Ultrassônico;
 
@@ -73,24 +72,15 @@ void callback(char* topic, byte* payload, unsigned long lenght) {
 String topicStr = String(topic);
 if (topicStr == TOPIC_SERVO1) { //Condicional referente ao Servo Motor 1;
   int angulo = 90; //Definição do ângulo solicitado;
-  servo1.write(angle);//Movimentação;
-  mqtt.publish(TOPIC_STATE_SERVO1, String(angulo).c_str()); //Publicação do estado do Servo Motor 1;
+  servo1.write(angulo);//Movimentação;
+  mqtt.publish(TOPIC__SERVO_1, String(angulo).c_str()); //Publicação do estado do Servo Motor 1;
   return;
 } else if (topicStr == TOPIC_SERVO2) { //Condicional referente ao Servo Motor 2;
   int angulo = 90; //Definição do ângulo solicitado;
-  servo2.write(angle); //Movimentação;
-  mqtt.publish(TOPIC_STATE_SERVO2, String(angulo).c_str()); //Publicação do estado do Servo Motor 2;
+  servo2.write(angulo); //Movimentação;
+  mqtt.publish(TOPIC_SERVO_2, String(angulo).c_str()); //Publicação do estado do Servo Motor 2;
   return;
 }
-
-  }
-  Serial.println(MensagemRecebida);
-  if (mensagem == "1"){
-    digitalWrite(LED, high); //Condicional para ligar o LED
-    Serial.println("LED Ligado"); //Exibição no Monitor Serial
-  } else if (mensagem == "0"){
-    digitalWrite(LED, low); //Condicional para desligar o LED
-     Serial.println("LED Desligado"); //Exibição no Monitor Serial
 
   }
 }
