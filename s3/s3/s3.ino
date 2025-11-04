@@ -11,14 +11,16 @@ const int LED = 2; //Definição de pino referente ao LED
 const servo1 = a0; //Definição do Pino referente ao Servo Motor 1;
 const servo2 = a0; //Definição do Pino referente ao Servo Motor 2;
 const int iluminacao_led = a0; //Definição do Pino referente ao LED de iluminação;
+const byte TRIGGER_PIN = a0; //Definição do Pino referente ao Sensor Ultrassônico;
+const byte ECHO_PIN = a0; //Definição do Pino referente ao Sensor Ultrassônico;
 
 Servo servo1; //Servo Motor 1
 Servo servo2; //Servo Motor 2
 
 
 
-const String brokerUser = "";
-const String brokerPass = "";
+//const String brokerUser = "";
+//const String brokerPass = "";
 
 void setup() {
   Serial.begin(115200);
@@ -26,7 +28,9 @@ void setup() {
     servo2.attach(servo2); //Definição do pino Servo Motor 2;
     servo1.write(0); //Posição inicial;
     servo2.write(0);//Posição inicial;
-    pinMode(iluminacao_led, OUTPUT);//Definição do pino de LED como saída;
+    pinMode(LED, OUTPUT);//Definição do pino de LED como saída;
+    pinMode(  TRIGGER_PIN, OUTPUT); //Saída
+    pinMode (ECHO_PIN, INPUT);//Entrada
 
 
   wifi_client.setInsecure(); //Broker ignorar o Certificado de Segurança/Autenticação
@@ -57,6 +61,15 @@ void callback(char* topic, byte* payload, unsigned long lenght) {
   for (int i = 0; i < lenght; i++){
     MensagemRecebida += (char) payload[i]; //Cada letra de payload e junta na mensagem
 
+     if (topic == TOPIC_LED){ //Condicional SE, conforme Tópico
+      if (MensagemRecebida == "Acender"){ //Mensagem 
+        digitalWrite(LED, HIGH) //LED Ligado
+      } else{
+        digitalWrite(LED, LOW) //LED Desligado
+      }
+    }
+  }
+
 String topicStr = String(topic);
 if (topicStr == TOPIC_SERVO1) { //Condicional referente ao Servo Motor 1;
   int angulo = 90; //Definição do ângulo solicitado;
@@ -84,13 +97,30 @@ if (topicStr == TOPIC_SERVO1) { //Condicional referente ao Servo Motor 1;
 void loop() {
 
   // put your main code here, to run repeatedly:
-  String mensagem = "";                       //Dentro do Loop, para recriá-la
-  if (Serial.available() > 0) {               //Caracteres disponíveis na "fila"
-    mensagem = Serial.readStringUntil('\n');  //Leitura até "encontrar" o \n, palavra salva dentro da variável "mensagem"
-    mensagem = "Beatriz: " + mensagem;       //exibição ao leitor
-    mqtt.publish("Miguel",mensagem.c_str()); //enviar para o broker
+  //String mensagem = "";                       //Dentro do Loop, para recriá-la
+ // if (Serial.available() > 0) {               //Caracteres disponíveis na "fila"
+   // mensagem = Serial.readStringUntil('\n');  //Leitura até "encontrar" o \n, palavra salva dentro da variável "mensagem"
+    //mensagem = "Beatriz: " + mensagem;       //exibição ao leitor
+   // mqtt.publish("Miguel",mensagem.c_str()); //enviar para o broker
+ // }
+  long distancia = lerDistancia(TRIGGER_PIN, ECHO_PIN) //Definição conforme os Pinos;
+  if (distancia < 10){
+       mqtt.publish(TOPIC_ULTRASSONICO, "Presente"); //enviar para o broker
   }
-  mqtt.loop();
+  mqtt.loop(); //Loop;
+}
+
+long lerDistancia() { //Função de leitura de distância;
+  digitalWrite(TRIGGER_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIGGER_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIGGER_PIN, LOW);
+  
+  long duracao = pulseIn(ECHO_PIN, HIGH);
+  long distancia = duracao * 349.24 / 2 / 10000;
+  
+  return distancia; //Retorno da distância, conforme calculado;
 }
 
 void connecttoBroker(){
