@@ -1,9 +1,8 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include <PubSubClientSecure.h>
+#include <WiFiClientSecure.h>
 #include "env.h"
-#include "DHT.h"
-
+#include <DHT.h>
 
 WiFiClientSecure wifi_client;
 PubSubClient mqtt(wifi_client);
@@ -23,17 +22,14 @@ int valorldr = 0;
 #define DHTTYPE DHT11
 DHT dht(DHTPIN, DHTTYPE);
 
-const String brokerUser = "" ;
-const String brokerPass = "" ;
-
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  pinMode(TRIGGER_PIN, OUTPUT);
-  pinMode(ECHO_PIN, INPUT);
-
+  dht.begin();
   wifi_client.setInsecure();
+  pinMode(pino_led, OUTPUT);           
+  digitalWrite(pino_led, LOW);        
   WiFi.begin(WIFI_SSID, WIFI_PASS);
   Serial.println("Conectando no WiFi");
   while(WiFi.status() != WL_CONNECTED){
@@ -41,7 +37,6 @@ void setup() {
     delay(200);
   }
   Serial.println("Conectado com sucesso!");
-
   mqtt.setServer(BROKER_URL,BROKER_PORT);
   String clientID = "S1";
   clientID += String(random(0xffff),HEX);
@@ -49,60 +44,44 @@ void setup() {
     Serial.print(".");
     delay(200);
   }
-  mqtt.subscribe(TOPIC_PRESENCE1);
+  // mqtt.subscribe(topic.c_str());
   mqtt.subscribe(TOPIC_LUMINOSIDADE);
   mqtt.setCallback(callback);
   Serial.println("\nConectado ao Broker!");
 
+  pinMode(ldr,INPUT);
 }
 
-
 void loop() {
-  // put your main code here, to run repeatedly:
- long dist_1 = lerDistancia(trig, echo){
-  if (dist_1 < 10){
+  long distancia = lerDistancia(trigg, echo){
+    if (distancia < 10){
      mqtt.publish(TOPIC_ULTRASSONICO, "Presente");
   }
-
-
-
-
-
-  delay(100);
+  //ldr
+  valorldr(ldr);
   mqtt.loop();
 }
 
-
-// void callback(char* topic, byte* payload, unsigned long length){
-//   String MensagemRecebida = "";
-//   if(pino_led == HIGH){
-//     digitalWrite (pino_led,LOW);
-//     delay(200);
-//     digitalWrite(pino_led,HIGH);
-//     MensagemRecebida += (char) payload[pino_led]; //Pega cada letra de payload e junta na mensagem
-
-//   }
-//   Serial.println(MensagemRecebida);
-// }
-
-void connectToBroker(){
-  Serial.println("Conectado ao brooker!");
+long valorldr(int ldr_pin){
+  int luminance = analogRead(ldr_pin);
+  if (luminance < 400){
+     mqtt.publish(TOPIC_luminosidade, "Presente");//mudar
+  }
+  return luminance;
 }
 
-//Sensor ultrassônico
-long lerDistancia(byte trigg_pin, byte echo_pin) {
-  digitalWrite(trigg_pin, LOW);
+long lerDistancia(byte trigg, byte echo) {
+  digitalWrite(trigg, LOW);
   delayMicroseconds(2);
-  digitalWrite(trigg_pin, HIGH);
+  digitalWrite(trigg, HIGH);
   delayMicroseconds(10);
-  digitalWrite(trigg_pin, LOW);
+  digitalWrite(trigg, LOW);
   
-  long duracao = pulseIn(echo_pin, HIGH);
+  long duracao = pulseIn(echo, HIGH);
   long distancia = duracao * 349.24 / 2 / 10000;
   
   return distancia;
-} //sensor ultrassônico
-
+}
 
 
 void callback(char* topic, byte* payload, unsigned long length) {
@@ -112,15 +91,20 @@ void callback(char* topic, byte* payload, unsigned long length) {
   }
   Serial.println(MensagemRecebida);
 
-  if( topic == TOPIC_PRESENCE1){
+  if( topic == TOPIC_PRESENCE){
     if(MensagemRecebida == "Acender"){
       digitalWrite(pino_led, HIGH);
-    } else (MensagemRecebida == "Apagar"){
-      digitalWrite(pino_led, LOW)
-    }
+    } else(MensagemRecebida == "Apagar"){
+      digitalWrite(pino_led, LOW);
+  }
+
+  if (topic == TOPIC_LUMINOSIDADE){ //mudar
+    if(MensagemRecebida == "Acender"){
+      digitalWrite(pino_led, HIGH);
+    } else(MensagemRecebida == "Apagar"){
+      digitalWrite(pino_led, LOW);
   }
 }
 void connectToBrooker(){
   Serial.println("Conectado ao Brooker...");
 }
-
