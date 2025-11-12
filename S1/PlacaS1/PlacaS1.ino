@@ -8,12 +8,20 @@
 WiFiClientSecure wifi_client;
 PubSubClient mqtt(wifi_client);
 
-const String topic = "S1";
-const byte pino_led = 2;
-const int trig_1 = 12;
-const int echo_1 = 13;;
+const int trigg = 22; //sensor ultrassônico
+const int echo = 23;
 
+const byte pino_led = 19; //led rgb
+const byte red_pin = 14;
+const byte green_pin = 26;
+const byte blue_pin = 25;
 
+int ldr = 34; //luminosidade
+int valorldr = 0;
+
+#define DHTPIN 4 //DHT
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
 
 const String brokerUser = "" ;
 const String brokerPass = "" ;
