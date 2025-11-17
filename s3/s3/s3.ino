@@ -17,16 +17,40 @@ const byte ECHO_PIN = 18; //Definição do Pino referente ao Sensor Ultrassônic
 Servo1 servo1_pin; //Servo Motor 1
 Servo2 servo2_pin; //Servo Motor 2
 
-void statusLED(byte status) {
+void statusLED(byte status) { //Função do LED RGB, referente ao status
     turnOffLEDs();
     switch (status) {
-    case 254:  
+    case 254:  //Caso Erro - Vermelho
         setLEDColor(255, 0, 0);
         break;
-    case 1:  
+    case 1:  //Conectando o WiFi - Amarelo
         setLEDColor(150, 255, 0);
         break;
-
+    case 2: //Conectando ao MQTT - Rosa
+        setLEDColor(150, 0, 255);
+        break;
+    case 3:  //Movendo para frente - Verde
+        setLEDColor(0, 255, 0);
+        break;
+    case 4:  //Movendo para trás - Ciano
+        setLEDColor(0, 255, 255);
+        break;
+    default:
+        for (byte i = 0; i < 4; i++) {
+            setLEDColor(0, 0, 255);  //Possível erro - Azul piscando
+            delay(100);
+            turnOffLEDs();
+            delay(100);
+        }
+        break;
+    }
+}
+void turnOffLEDs() { setLEDColor(0, 0, 0); }
+void setLEDColor(byte r, byte g, byte b) {
+    ledcWrite(PWM_CHANNEL_LED_R, r);
+    ledcWrite(PWM_CHANNEL_LED_G, g);
+    ledcWrite(PWM_CHANNEL_LED_B, b);
+}
 
 //const String brokerUser = "";
 //const String brokerPass = "";
