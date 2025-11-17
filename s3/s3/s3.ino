@@ -8,14 +8,14 @@ WiFiClientSecure wifi_client; //Criando Cliente WIFI
 PubSubClient mqtt(wifi_client); //Criando Cliente MQTT
 
 const int LED = 14; //Definição de pino referente ao LED
-const servo1 = 26; //Definição do Pino referente ao Servo Motor 1;
-const servo2 = 27; //Definição do Pino referente ao Servo Motor 2;
+const servo1_pin = 26; //Definição do Pino referente ao Servo Motor 1;
+const servo2_pin = 27; //Definição do Pino referente ao Servo Motor 2;
 const byte TRIGGER_PIN = 5; //Definição do Pino referente ao Sensor Ultrassônico;
 const byte ECHO_PIN = 18; //Definição do Pino referente ao Sensor Ultrassônico;
 
 
-Servo servo1; //Servo Motor 1
-Servo servo2; //Servo Motor 2
+Servo1 servo1_pin; //Servo Motor 1
+Servo2 servo2_pin; //Servo Motor 2
 
 
 
@@ -24,8 +24,8 @@ Servo servo2; //Servo Motor 2
 
 void setup() {
   Serial.begin(115200);
-  servo1.attach(servo1); //Definição do pino Servo Motor 1;
-    servo2.attach(servo2); //Definição do pino Servo Motor 2;
+  servo1.attach(servo1_pin); //Definição do pino Servo Motor 1;
+    servo2.attach(servo2_pin); //Definição do pino Servo Motor 2;
     servo1.write(0); //Posição inicial;
     servo2.write(0);//Posição inicial;
     pinMode(LED, OUTPUT);//Definição do pino de LED como saída;
@@ -49,12 +49,13 @@ void setup() {
     Serial.print(".");
     delay(200);
   }
-  mqtt.subscribe(TOPIC_PRESENCE1());
-  mqtt.subcribe(TOPIC_SERVO1()); 
-    mqtt.subcribe(TOPIC_SERVO2());
-
-  mqtt.setCallback(callback);
+    mqtt.setCallback(callback);
   Serial.println("\nConectado ao broker!"); //Mensagem de confirmação exibida no Monitor Serial
+
+  mqtt.subscribe(TOPIC_PRESENCE1());
+  mqtt.subscribe(TOPIC_SERVO1()); 
+    mqtt.subscribe(TOPIC_SERVO2());
+
 }
 void callback(char* topic, byte* payload, unsigned long lenght) {
   String MensagemRecebida = "";
@@ -63,9 +64,9 @@ void callback(char* topic, byte* payload, unsigned long lenght) {
 
      if (topic == TOPIC_LED){ //Condicional SE, conforme Tópico
       if (MensagemRecebida == "Acender"){ //Mensagem 
-        digitalWrite(LED, HIGH) //LED Ligado
+        digitalWrite(LED, HIGH); //LED Ligado
       } else{
-        digitalWrite(LED, LOW) //LED Desligado
+        digitalWrite(LED, LOW); //LED Desligado
       }
     }
   }
@@ -84,7 +85,6 @@ if (topicStr == TOPIC_SERVO1) { //Condicional referente ao Servo Motor 1;
 }
 
   }
-}
 void loop() {
 
   // put your main code here, to run repeatedly:
