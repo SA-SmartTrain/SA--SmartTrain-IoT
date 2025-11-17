@@ -17,6 +17,15 @@ const byte ECHO_PIN = 18; //Definição do Pino referente ao Sensor Ultrassônic
 Servo1 servo1_pin; //Servo Motor 1
 Servo2 servo2_pin; //Servo Motor 2
 
+void statusLED(byte status) {
+    turnOffLEDs();
+    switch (status) {
+    case 254:  
+        setLEDColor(255, 0, 0);
+        break;
+    case 1:  
+        setLEDColor(150, 255, 0);
+        break;
 
 
 //const String brokerUser = "";
