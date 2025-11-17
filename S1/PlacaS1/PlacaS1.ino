@@ -83,6 +83,42 @@ long lerDistancia(byte trigg, byte echo) {
   return distancia;
 }
 
+//led rgb
+void statusLED(byte status) {
+    turnOffLEDs();
+    switch (status) {
+    case 254:  // Erro (Vermelho)
+        setLEDColor(255, 0, 0);
+        break;
+    case 1:  // Conectando ao Wi-Fi (Amarelo)
+        setLEDColor(150, 255, 0);
+        break;
+    case 2:  // Conectando ao MQTT (Rosa)
+        setLEDColor(150, 0, 255);
+        break;
+    case 3:  // Movendo para frente (Verde)
+        setLEDColor(0, 255, 0);
+        break;
+    case 4:  // Movendo para trás (Ciano)
+        setLEDColor(0, 255, 255);
+        break;
+    default:
+        for (byte i = 0; i < 4; i++) {
+            setLEDColor(0, 0, 255);  // erro no status (pisca azul)
+            delay(100);
+            turnOffLEDs();
+            delay(100);
+        }
+        break;
+    }
+}
+void turnOffLEDs() { setLEDColor(0, 0, 0); }
+void setLEDColor(byte r, byte g, byte b) {
+    ledcWrite(PWM_CHANNEL_LED_R, r);
+    ledcWrite(PWM_CHANNEL_LED_G, g);
+    ledcWrite(PWM_CHANNEL_LED_B, b);
+}
+
 
 void callback(char* topic, byte* payload, unsigned long length) {
   String MensagemRecebida = "";
@@ -91,7 +127,7 @@ void callback(char* topic, byte* payload, unsigned long length) {
   }
   Serial.println(MensagemRecebida);
 
-  if( topic == TOPIC_PRESENCE){
+  if( topic == TOPIC_PRESENCE1){
     if(MensagemRecebida == "Acender"){
       digitalWrite(pino_led, HIGH);
     } else(MensagemRecebida == "Apagar"){
