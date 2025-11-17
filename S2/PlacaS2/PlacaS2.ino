@@ -6,14 +6,23 @@
 WiFiClientSecure wifi_client;
 PubSubClient mqtt(wifi_client);
 
-const String SSID = "FIESC_IOT_EDU";
-const String PASS = "8120gv08";
-const String topic = "S2";
-const String brokerURL = "test.mosquitto.org";
-const int brokerPort = 1883;
-2
-const String brokerUser = "" ;
-const String brokerPass = "" ;
+// const String WIFI_SSID = "FIESC_IOT_EDU";
+// const String WIFI_PASS = "8120gv08";
+// const String topic = "S2";
+
+// const String brokerUser = "" ;
+// const String brokerPass = "" ;
+
+const int trig_1 = 12;
+const int echo_1 = 13;
+
+const int trig_2 = 14;
+const int echo_2 = 15;
+const byte LED_PIN = 18;
+const byte led_r = 25;
+const byte led_g = 26;
+const byte led_b = 27;
+
 
 void setup() {
   // put your setup code here, to run once:
@@ -21,16 +30,14 @@ void setup() {
   wifi_client.setInsecure();
   pinMode(ledPin, OUTPUT);           // Mudei isso
   digitalWrite(ledPin, LOW);         // Mudei isso
-  WiFi.begin(SSID, PASS);
-  Serial.println("Conectando no WiFi");
-  WiFi.begin(SSID, PASS);
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
   Serial.println("Conectando no WiFi");
   while(WiFi.status() != WL_CONNECTED){
     Serial.print(".");
     delay(200);
   }
   Serial.println("Conectado com sucesso!");
-  mqtt.setServer(brokerURL.c_str(),brokerPort);
+  mqtt.setServer(BROKER_URL,BROKER_PORT);
   String clientID = "S2";
   clientID += String(random(0xffff),HEX);
   while (mqtt.connect(clientID.c_str()) == 0){
@@ -43,26 +50,49 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  String mensagem = "";
-  if(Serial.available() > 0){
-    mensagem = Serial.readStringUntil('\n');
-    mensagem = "Iasmin: " + mensagem;
-    mqtt.publish("Camafeu",mensagem.c_str());
-      if (mensagem=="1") {digitalWrite(LED,HIGH); mqtt.publish(topicPub,"LED ligado");}         // Mudei isso   
-  else if (mensagem=="0") {digitalWrite(LED,LOW); mqtt.publish(topicPub,"LED desligado");}     // Mudei isso
-}
+
+
+  long dist_1 = lerDistancia(trig_1, echo_1){
+    if (dist_1 < 10){
+     mqtt.publish(TOPIC_ULTRASSONICO1, "Presente");
   }
-mqtt.loop();
+ 
+
+  long dist_2 = lerDistancia(trig_2, echo_2){
+    if (dist_2 < 10){
+     mqtt.publish(TOPIC_ULTRASSONICO2, "Presente");
+  }
+ 
+  mqtt.loop();
+}
+
+long lerDistancia(byte trig_pin, byte echo_pin) {
+  digitalWrite(trig_pin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trig_pin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig_pin, LOW);
+  
+  long duracao = pulseIn(echo_pin, HIGH);
+  long distancia = duracao * 349.24 / 2 / 10000;
+  
+  return distancia;
 }
 
 
 void callback(char* topic, byte* payload, unsigned long length) {
   String MensagemRecebida = "";
   for(int i = 0; i < length; i++){
-    MensagemRecebida += (char) payload[i];
+    MensagemRecebida += (char) payload[i]; 
   }
   Serial.println(MensagemRecebida);
+
+  if( topic == TOPIC_PRESENCE1){
+    if(MensagemRecebida == "Acender"){
+      digitalWrite(LED_PIN, HIGH);
+    } else(MensagemRecebida == "Apagar"){
+      digitalWrite(LED_PIN, LOW);
+  }
 }
 void connectToBrooker(){
   Serial.println("Conectado ao Brooker...");

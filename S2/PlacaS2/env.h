@@ -10,8 +10,8 @@
 #define BROKERUSR_ID "SMARTTRAIN_S2"
 #define BROKER_PASS_USR_PASS "SmartTrain2025"
 
-#define TOPIC_PRESENCE1 "SmartTrain/S2/Presença2"
-#define TOPIC_PRESENCE1 "SmartTrain/S2/Presença4"
-#define TOPIC_PRESENCE1 "SmartTrain/S2/Servo1"
+#define TOPIC_ULTRASSONICO1 "SmartTrain/S2/Presença2"
+#define TOPIC_ULTRASSONICO2 "SmartTrain/S2/Presença4"
+#define TOPIC_PRESENCE1 "SmartTrain/S1/Luminosidade"
 
 #endif
