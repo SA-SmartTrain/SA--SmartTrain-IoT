@@ -16,8 +16,6 @@ const byte ECHO_PIN = a0; //Definição do Pino referente ao Sensor Ultrassônic
 Servo servo1; //Servo Motor 1
 Servo servo2; //Servo Motor 2
 
-
-
 //const String brokerUser = "";
 //const String brokerPass = "";
 
