@@ -12,6 +12,7 @@ const int echo = 23;
 
 int ldr = 34; //luminosidade
 int valorldr = 0;
+int pino_led = 19;
 
 #define DHTPIN 4 //DHT
 #define DHTTYPE DHT11
@@ -48,15 +49,13 @@ void setup() {
 }
 
 void loop() {
-  long distancia = lerDistancia(trigg, echo){
+  long distancia = lerDistancia(trigg, echo);
     if (distancia < 10){
      mqtt.publish(TOPIC_ULTRASSONICO, "Apagar");
   } 
-  //ldr
-  valorldr(ldr);
 
   //dht
-  float h = dht.readHumity(); //Ler umidade
+  float h = dht.readHumidity(); //Ler umidade
   float t = dht.readTemperature();
 
   if(isnan(h) || isnan(t)) {
@@ -81,6 +80,7 @@ void loop() {
   mqtt.loop();
 }
 
+//ldr
 long valorldr(int ldr_pin){
   int luminance = analogRead(ldr_pin);
   if (luminance < 400){
