@@ -10,11 +10,6 @@ PubSubClient mqtt(wifi_client);
 const int trigg = 22; //sensor ultrassônico
 const int echo = 23;
 
-const byte pino_led = 19; //led rgb
-const byte red_pin = 14;
-const byte green_pin = 26;
-const byte blue_pin = 25;
-
 int ldr = 34; //luminosidade
 int valorldr = 0;
 
@@ -45,7 +40,7 @@ void setup() {
     delay(200);
   }
   // mqtt.subscribe(topic.c_str());
-  mqtt.subscribe(TOPIC_LUMINOSIDADE);
+  mqtt.subscribe(TOPIC_LUMINOSIDADE); //Inscrição no topico de luminosidade
   mqtt.setCallback(callback);
   Serial.println("\nConectado ao Broker!");
 
@@ -55,18 +50,43 @@ void setup() {
 void loop() {
   long distancia = lerDistancia(trigg, echo){
     if (distancia < 10){
-     mqtt.publish(TOPIC_ULTRASSONICO, "Presente");
-  }
+     mqtt.publish(TOPIC_ULTRASSONICO, "Apagar");
+  } 
   //ldr
   valorldr(ldr);
+
+  //dht
+  float h = dht.readHumity(); //Ler umidade
+  float t = dht.readTemperature();
+
+  if(isnan(h) || isnan(t)) {
+    Serial.println("Falha na leitura do sensor DHT11!");
+    delay(2000);
+    return;
+    }
+  Serial.print("Umidade: ");
+  Serial.print(h);
+  Serial.print("Temperatura: ");
+  Serial.print(t);
+  Serial.print(" °C");
+
+  String strTemp = String(t, 1);
+  String strHum = String(h, 0);
+
+  mqtt.publish(TOPIC_TEMPERATURA, strTemp.c_str());
+  mqtt.publish(TOPIC_UMIDADE, strHum.c_str());
+
+  delay(2000);
+
   mqtt.loop();
 }
 
 long valorldr(int ldr_pin){
   int luminance = analogRead(ldr_pin);
   if (luminance < 400){
-     mqtt.publish(TOPIC_luminosidade, "Presente");//mudar
-  }
+     mqtt.publish(TOPIC_LUMINOSIDADE, "Apagar");//mudar
+  } else {
+    mqtt.publish(TOPIC_LUMINOSIDADE, "Acender")};
   return luminance;
 }
 
@@ -83,41 +103,7 @@ long lerDistancia(byte trigg, byte echo) {
   return distancia;
 }
 
-//led rgb
-void statusLED(byte status) {
-    turnOffLEDs();
-    switch (status) {
-    case 254:  // Erro (Vermelho)
-        setLEDColor(255, 0, 0);
-        break;
-    case 1:  // Conectando ao Wi-Fi (Amarelo)
-        setLEDColor(150, 255, 0);
-        break;
-    case 2:  // Conectando ao MQTT (Rosa)
-        setLEDColor(150, 0, 255);
-        break;
-    case 3:  // Movendo para frente (Verde)
-        setLEDColor(0, 255, 0);
-        break;
-    case 4:  // Movendo para trás (Ciano)
-        setLEDColor(0, 255, 255);
-        break;
-    default:
-        for (byte i = 0; i < 4; i++) {
-            setLEDColor(0, 0, 255);  // erro no status (pisca azul)
-            delay(100);
-            turnOffLEDs();
-            delay(100);
-        }
-        break;
-    }
-}
-void turnOffLEDs() { setLEDColor(0, 0, 0); }
-void setLEDColor(byte r, byte g, byte b) {
-    ledcWrite(PWM_CHANNEL_LED_R, r);
-    ledcWrite(PWM_CHANNEL_LED_G, g);
-    ledcWrite(PWM_CHANNEL_LED_B, b);
-}
+
 
 
 void callback(char* topic, byte* payload, unsigned long length) {
@@ -130,16 +116,17 @@ void callback(char* topic, byte* payload, unsigned long length) {
   if( topic == TOPIC_PRESENCE1){
     if(MensagemRecebida == "Acender"){
       digitalWrite(pino_led, HIGH);
-    } else(MensagemRecebida == "Apagar"){
+    } else if(MensagemRecebida == "Apagar"){
       digitalWrite(pino_led, LOW);
   }
-
-  if (topic == TOPIC_LUMINOSIDADE){ //mudar
+  }
+  if (topic == TOPIC_LUMINOSIDADE){ 
     if(MensagemRecebida == "Acender"){
       digitalWrite(pino_led, HIGH);
-    } else(MensagemRecebida == "Apagar"){
+    } else if(MensagemRecebida == "Apagar"){
       digitalWrite(pino_led, LOW);
   }
+}
 }
 void connectToBrooker(){
   Serial.println("Conectado ao Brooker...");
