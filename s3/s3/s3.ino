@@ -140,21 +140,6 @@ void loop() {
   //  mqtt.publish("Miguel",mensagem.c_str()); //enviar para o broker
   // }
   
-  // Reconectar se necessário
-  if (!mqtt.connected()) {
-    String clientID = "S3_beatrizcercal";
-    clientID += String(random(0xffff), HEX);
-    Serial.print("Reconectando ao broker");
-    while (!mqtt.connect(clientID.c_str())) {
-      Serial.print(".");
-      delay(200);
-    }
-    //Conexão após reconectar
-    mqtt.subscribe(TOPIC_SERVO_1); 
-    mqtt.subscribe(TOPIC_SERVO_2);
-    mqtt.subscribe(TOPIC_LED);
-  }
-
   long distancia = lerDistancia(TRIGGER_PIN, ECHO_PIN); //Definição conforme os Pinos;
   if (distancia > 0 && distancia < 10){
     mqtt.publish(TOPIC_ULTRASSONICO, "Presente"); //enviar para o broker
