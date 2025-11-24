@@ -9,7 +9,6 @@ WiFiClientSecure wifi_client; //Criando Cliente WIFI
 PubSubClient mqtt(wifi_client); //Criando Cliente MQTT
 
 const int LED = 14; //Definição de pino referente ao LED
-<<<<<<< HEAD
 const int pinoServo1 = 26; //Definição do Pino referente ao Servo Motor 1;
 const int pinoServo2 = 27; //Definição do Pino referente ao Servo Motor 2;
 const byte TRIGGER_PIN = 5; //Definição do Pino referente ao Sensor Ultrassônico;
