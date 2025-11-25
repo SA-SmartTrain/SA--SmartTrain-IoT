@@ -56,9 +56,9 @@ void loop() {
 
   //dht
   float h = dht.readHumidity(); //Ler umidade
-  float t = dht.readTemperature();
+  float t = dht.readTemperature(); //Ler temperatura
 
-  if(isnan(h) || isnan(t)) {
+  if(isnan(h) || isnan(t)) { //Valida os dados recebidos
     Serial.println("Falha na leitura do sensor DHT11!");
     delay(2000);
     return;
@@ -69,11 +69,11 @@ void loop() {
   Serial.print(t);
   Serial.print(" °C");
 
-  String strTemp = String(t, 1);
-  String strHum = String(h, 0);
+  String strTemp = String(t, 1); //Converte os valores recebidos em uma string com uma casa decimal
+  String strHum = String(h, 0); //Converte os valores recebidos sem casas decimais
 
-  mqtt.publish(TOPIC_TEMPERATURA, strTemp.c_str());
-  mqtt.publish(TOPIC_UMIDADE, strHum.c_str());
+  mqtt.publish(TOPIC_TEMPERATURA, strTemp.c_str()); //Publica uma mensagem no tópico de temperatura
+  mqtt.publish(TOPIC_UMIDADE, strHum.c_str()); //Publica uma mensagem no tópico de umidade
 
   delay(2000);
 
@@ -84,12 +84,13 @@ void loop() {
 long valorldr(int ldr_pin){
   int luminance = analogRead(ldr_pin);
   if (luminance < 400){
-     mqtt.publish(TOPIC_LUMINOSIDADE, "Apagar");//mudar
+     mqtt.publish(TOPIC_LUMINOSIDADE, "Apagar");
   } else {
     mqtt.publish(TOPIC_LUMINOSIDADE, "Acender")};
   return luminance;
 }
 
+//calcular distância
 long lerDistancia(byte trigg, byte echo) {
   digitalWrite(trigg, LOW);
   delayMicroseconds(2);
@@ -102,9 +103,6 @@ long lerDistancia(byte trigg, byte echo) {
   
   return distancia;
 }
-
-
-
 
 void callback(char* topic, byte* payload, unsigned long length) {
   String MensagemRecebida = "";
