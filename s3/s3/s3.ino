@@ -122,10 +122,12 @@ void setup() {
   }
 
   // Assinar tópicos
-  //mqtt.subscribe(TOPIC_PRESENCE1);
-  mqtt.subscribe(TOPIC_SERVO_1); 
-  mqtt.subscribe(TOPIC_SERVO_2);
-  mqtt.subscribe(TOPIC_LED);
+  //mqtt.subscribe(TOPIC_ULTRASSONICO); //Na própria placa
+  mqtt.subscribe(TOPIC_ULTRASSONICO_1); //Presença 1
+  mqtt.subscribe(TOPIC_ULTRASSONICO_2); //Presença 2
+  mqtt.subscribe(TOPIC_LED); //Luminosidade
+
+    
 
   Serial.println("\nConectado ao broker!"); //Mensagem de confirmação exibida no Monitor Serial
 }
