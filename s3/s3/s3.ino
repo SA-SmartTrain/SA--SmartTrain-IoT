@@ -122,9 +122,9 @@ void setup() {
   }
 
   // Assinar tópicos
-  //mqtt.subscribe(TOPIC_ULTRASSONICO); //Na própria placa
-  mqtt.subscribe(TOPIC_ULTRASSONICO_1); //Presença 1
-  mqtt.subscribe(TOPIC_ULTRASSONICO_2); //Presença 2
+  mqtt.subscribe(TOPIC_ULTRASSONICO); //Na própria placa
+  mqtt.subscribe(TOPIC_ULTRASSONICO1); //Presença 1
+  mqtt.subscribe(TOPIC_ULTRASSONICO2); //Presença 2
   mqtt.subscribe(TOPIC_LED); //Luminosidade
 
     
