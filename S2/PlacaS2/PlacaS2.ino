@@ -28,8 +28,8 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
   wifi_client.setInsecure();
-  pinMode(ledPin, OUTPUT);           // Mudei isso
-  digitalWrite(ledPin, LOW);         // Mudei isso
+  pinMode(LED_PIN, OUTPUT);           // Mudei isso
+  digitalWrite(LED_PIN, LOW);         // Mudei isso
   WiFi.begin(WIFI_SSID, WIFI_PASS);
   Serial.println("Conectando no WiFi");
   while(WiFi.status() != WL_CONNECTED){
@@ -40,29 +40,27 @@ void setup() {
   mqtt.setServer(BROKER_URL,BROKER_PORT);
   String clientID = "S2";
   clientID += String(random(0xffff),HEX);
-  while (mqtt.connect(clientID.c_str()) == 0){
+  while (mqtt.connect(clientID.c_str(), BROKERUSR_ID, BROKER_PASS_USR_PASS) == 0){
     Serial.print(".");
     delay(200);
   }
-  mqtt.subscribe(topic.c_str());
+  mqtt.subscribe(TOPIC_LUMINOSIDADE1);
   mqtt.setCallback(callback);
   Serial.println("\nConectado ao Broker!");
 }
 
 void loop() {
-
-
-  long dist_1 = lerDistancia(trig_1, echo_1){
+  long dist_1 = lerDistancia(trig_1, echo_1);
     if (dist_1 < 10){
      mqtt.publish(TOPIC_ULTRASSONICO1, "Presente");
   }
  
 
-  long dist_2 = lerDistancia(trig_2, echo_2){
+  long dist_2 = lerDistancia(trig_2, echo_2);
     if (dist_2 < 10){
      mqtt.publish(TOPIC_ULTRASSONICO2, "Presente");
   }
- 
+  Serial.println(dist_1, dist_2);
   mqtt.loop();
 }
 
@@ -87,12 +85,13 @@ void callback(char* topic, byte* payload, unsigned long length) {
   }
   Serial.println(MensagemRecebida);
 
-  if( topic == TOPIC_PRESENCE1){
+  if( topic == TOPIC_LUMINOSIDADE1){
     if(MensagemRecebida == "Acender"){
       digitalWrite(LED_PIN, HIGH);
-    } else(MensagemRecebida == "Apagar"){
+    } else if(MensagemRecebida == "Apagar"){
       digitalWrite(LED_PIN, LOW);
   }
+}
 }
 void connectToBrooker(){
   Serial.println("Conectado ao Brooker...");

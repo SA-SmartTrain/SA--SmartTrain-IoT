@@ -12,6 +12,6 @@
 
 #define TOPIC_ULTRASSONICO1 "SmartTrain/S2/Presença2"
 #define TOPIC_ULTRASSONICO2 "SmartTrain/S2/Presença4"
-#define TOPIC_PRESENCE1 "SmartTrain/S1/Luminosidade"
+#define TOPIC_LUMINOSIDADE1 "SmartTrain/S1/Luminosidade"
 
 #endif
