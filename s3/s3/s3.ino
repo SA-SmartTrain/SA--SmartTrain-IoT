@@ -149,14 +149,14 @@ void loop() {
   delay(100);
 }
 
-long lerDistancia(byte triggerPin, byte echoPin) { //Função de leitura de distância;
-  digitalWrite(triggerPin, LOW);
+long lerDistancia(byte TRIGGER_PIN, byte ECHO_PIN) { //Função de leitura de distância;
+  digitalWrite(TRIGGER_PIN, LOW);
   delayMicroseconds(2);
-  digitalWrite(triggerPin, HIGH);
+  digitalWrite(TRIGGER_PIN, HIGH);
   delayMicroseconds(10);
-  digitalWrite(triggerPin, LOW);
+  digitalWrite(TRIGGER_PIN, LOW);
   
-  long duracao = pulseIn(echoPin, HIGH, 30000); //Tempo em microsegundos;
+  long duracao = pulseIn(ECHO_PIN, HIGH, 30000); //Tempo em microsegundos;
   
 
   long distancia = (duracao * 0.0343) / 2; //Cálculo da distância em cm;
