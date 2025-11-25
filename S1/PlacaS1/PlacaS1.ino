@@ -11,7 +11,6 @@ const int trigg = 22; //sensor ultrassônico
 const int echo = 23;
 
 int ldr = 34; //luminosidade
-int valorldr = 0;
 int pino_led = 19;
 
 #define DHTPIN 4 //DHT
@@ -50,11 +49,13 @@ void setup() {
   pinMode(ldr,INPUT);  //Define o ldr como pino de entrada de dados
 }
 
+
 void loop() {
   long distancia = lerDistancia(trigg, echo);
     if (distancia < 10){
-     mqtt.publish(TOPIC_ULTRASSONICO, "Apagar"); //Publicação de mensagem para os outros inscritos
+     mqtt.publish(TOPIC_PRESENCE1, "Apagar"); //Publicação de mensagem para os outros inscritos
   } 
+  valorldr(ldr);
 
   //dht
   float h = dht.readHumidity(); //Ler umidade
@@ -88,7 +89,8 @@ long valorldr(int ldr_pin){
   if (luminance < 400){
      mqtt.publish(TOPIC_LUMINOSIDADE, "Apagar"); //Mensagem enviada para outras placas
   } else {
-    mqtt.publish(TOPIC_LUMINOSIDADE, "Acender")}; //Mensagem enviada para outras placas
+    mqtt.publish(TOPIC_LUMINOSIDADE, "Acender");//Mensagem enviada para outras placas
+    } 
   return luminance;
 }
 
@@ -105,6 +107,7 @@ long lerDistancia(byte trigg, byte echo) {  //Cálculo de distância
   
   return distancia;
 }
+
 
 void callback(char* topic, byte* payload, unsigned long length) { //Recebe as mensagens das outras placas de forma inteira e completa
   String MensagemRecebida = "";
