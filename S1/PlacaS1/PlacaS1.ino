@@ -1,10 +1,10 @@
-#include <WiFi.h>
+#include <WiFi.h>     //Bibliotecas
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
 #include "env.h"
 #include <DHT.h>
 
-WiFiClientSecure wifi_client;
+WiFiClientSecure wifi_client; //conexão com o wifi
 PubSubClient mqtt(wifi_client);
 
 const int trigg = 22; //sensor ultrassônico
@@ -24,15 +24,16 @@ void setup() {
   Serial.begin(115200);
   dht.begin();
   wifi_client.setInsecure();
-  pinMode(pino_led, OUTPUT);           
-  digitalWrite(pino_led, LOW);        
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  pinMode(pino_led, OUTPUT);      //Envio de sinais    
+  digitalWrite(pino_led, LOW);    //Desliga o led
+  WiFi.begin(WIFI_SSID, WIFI_PASS);   //Conexão com o wifi
   Serial.println("Conectando no WiFi");
   while(WiFi.status() != WL_CONNECTED){
     Serial.print(".");
     delay(200);
   }
-  Serial.println("Conectado com sucesso!");
+
+  Serial.println("Conectado com sucesso!");  //Conexão com o BROKER
   mqtt.setServer(BROKER_URL,BROKER_PORT);
   String clientID = "S1";
   clientID += String(random(0xffff),HEX);
@@ -40,18 +41,19 @@ void setup() {
     Serial.print(".");
     delay(200);
   }
+
   // mqtt.subscribe(topic.c_str());
   mqtt.subscribe(TOPIC_LUMINOSIDADE); //Inscrição no topico de luminosidade
-  mqtt.setCallback(callback);
+  mqtt.setCallback(callback); //Processa a mensagem recebida no tópico de luminosidade
   Serial.println("\nConectado ao Broker!");
 
-  pinMode(ldr,INPUT);
+  pinMode(ldr,INPUT);  //Define o ldr como pino de entrada de dados
 }
 
 void loop() {
   long distancia = lerDistancia(trigg, echo);
     if (distancia < 10){
-     mqtt.publish(TOPIC_ULTRASSONICO, "Apagar");
+     mqtt.publish(TOPIC_ULTRASSONICO, "Apagar"); //Publicação de mensagem para os outros inscritos
   } 
 
   //dht
@@ -63,9 +65,9 @@ void loop() {
     delay(2000);
     return;
     }
-  Serial.print("Umidade: ");
+  Serial.print("Umidade: "); //Mostra na tela os resultados da umidade
   Serial.print(h);
-  Serial.print("Temperatura: ");
+  Serial.print("Temperatura: "); //Mostra na tela os resultados da temperatura
   Serial.print(t);
   Serial.print(" °C");
 
@@ -84,14 +86,14 @@ void loop() {
 long valorldr(int ldr_pin){
   int luminance = analogRead(ldr_pin);
   if (luminance < 400){
-     mqtt.publish(TOPIC_LUMINOSIDADE, "Apagar");
+     mqtt.publish(TOPIC_LUMINOSIDADE, "Apagar"); //Mensagem enviada para outras placas
   } else {
-    mqtt.publish(TOPIC_LUMINOSIDADE, "Acender")};
+    mqtt.publish(TOPIC_LUMINOSIDADE, "Acender")}; //Mensagem enviada para outras placas
   return luminance;
 }
 
 //calcular distância
-long lerDistancia(byte trigg, byte echo) {
+long lerDistancia(byte trigg, byte echo) {  //Cálculo de distância
   digitalWrite(trigg, LOW);
   delayMicroseconds(2);
   digitalWrite(trigg, HIGH);
@@ -104,21 +106,21 @@ long lerDistancia(byte trigg, byte echo) {
   return distancia;
 }
 
-void callback(char* topic, byte* payload, unsigned long length) {
+void callback(char* topic, byte* payload, unsigned long length) { //Recebe as mensagens das outras placas de forma inteira e completa
   String MensagemRecebida = "";
   for(int i = 0; i < length; i++){
     MensagemRecebida += (char) payload[i];
   }
   Serial.println(MensagemRecebida);
 
-  if( topic == TOPIC_PRESENCE1){
+  if( topic == TOPIC_PRESENCE1){     //Comunicação com outras placas
     if(MensagemRecebida == "Acender"){
       digitalWrite(pino_led, HIGH);
     } else if(MensagemRecebida == "Apagar"){
       digitalWrite(pino_led, LOW);
   }
   }
-  if (topic == TOPIC_LUMINOSIDADE){ 
+  if (topic == TOPIC_LUMINOSIDADE){  //Comunicação com outras placas
     if(MensagemRecebida == "Acender"){
       digitalWrite(pino_led, HIGH);
     } else if(MensagemRecebida == "Apagar"){
