@@ -115,7 +115,6 @@ void moverFrente(int velocidade) {
   digitalWrite(IN2, LOW);
   analogWrite(ENA, velocidade);
 
-  // LED conforme imagem
   digitalWrite(21, HIGH);   // Verde
   digitalWrite(18, LOW);    // Vermelho
 
@@ -129,7 +128,7 @@ void moverRe(int velocidade) {
   digitalWrite(IN2, HIGH);
   analogWrite(ENA, velocidade);
 
-  // LED conforme imagem
+
   digitalWrite(21, LOW);    // Verde
   digitalWrite(18, HIGH);   // Vermelho
 
@@ -141,7 +140,7 @@ void pararTrem() {
   digitalWrite(IN2, LOW);
   analogWrite(ENA, 0);
 
-  // LED conforme imagem
+
   digitalWrite(21, LOW);   // Verde
   digitalWrite(18, LOW);   // Vermelho
 
