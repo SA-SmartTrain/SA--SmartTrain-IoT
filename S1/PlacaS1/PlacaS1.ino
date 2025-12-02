@@ -1,10 +1,10 @@
-#include <WiFi.h>     //Bibliotecas
+#include <WiFi.h>     
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
 #include "env.h"
 #include <DHT.h>
 
-WiFiClientSecure wifi_client; //conexão com o wifi
+WiFiClientSecure wifi_client; 
 PubSubClient mqtt(wifi_client);
 
 const int trigg = 22; //sensor ultrassônico
@@ -23,9 +23,9 @@ void setup() {
   Serial.begin(115200);
   dht.begin();
   wifi_client.setInsecure();
-  pinMode(pino_led, OUTPUT);      //Envio de sinais    
-  digitalWrite(pino_led, LOW);    //Desliga o led
-  WiFi.begin(WIFI_SSID, WIFI_PASS);   //Conexão com o wifi
+  pinMode(pino_led, OUTPUT);          
+  digitalWrite(pino_led, LOW);   
+  WiFi.begin(WIFI_SSID, WIFI_PASS);   
   Serial.println("Conectando no WiFi");
   while(WiFi.status() != WL_CONNECTED){
     Serial.print(".");
@@ -42,11 +42,11 @@ void setup() {
   }
 
   // mqtt.subscribe(topic.c_str());
-  mqtt.subscribe(TOPIC_LUMINOSIDADE); //Inscrição no topico de luminosidade
+  mqtt.subscribe(TOPIC_LUMINOSIDADE); 
   mqtt.setCallback(callback); //Processa a mensagem recebida no tópico de luminosidade
   Serial.println("\nConectado ao Broker!");
 
-  pinMode(ldr,INPUT);  //Define o ldr como pino de entrada de dados
+  pinMode(ldr,INPUT);  
 }
 
 
