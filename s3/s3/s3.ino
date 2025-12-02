@@ -162,16 +162,16 @@ void loop() {
 }
 
 long lerDistancia(byte TRIGGER_PIN, byte ECHO_PIN) {  //Função de leitura de distância;
-  digitalWrite(TRIGGER_PIN, LOW);
+  digitalWrite(TRIGGER_PIN, LOW); //Pulso Baixo
   delayMicroseconds(2);
   digitalWrite(TRIGGER_PIN, HIGH);
-  delayMicroseconds(10);
+  delayMicroseconds(10); //Pulso Alto - dispara o Sensor Ultrassônico
   digitalWrite(TRIGGER_PIN, LOW);
 
-  long duracao = pulseIn(ECHO_PIN, HIGH, 30000);  //Tempo em microsegundos;
+  long duracao = pulseIn(ECHO_PIN, HIGH, 30000);  //Tempo em microsegundos que o som demorou para ir e voltar
 
 
-  long distancia = (duracao * 0.0343) / 2;  //Cálculo da distância em cm;
+  long distancia = (duracao * 0.0343) / 2;  //Cálculo da distância em cm, velocidade do Som (cm/microssegundo)
 
   return distancia;  //Retorno da distância, conforme calculado;
 }
