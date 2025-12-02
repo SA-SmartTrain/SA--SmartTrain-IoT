@@ -120,13 +120,13 @@ void setup() {
   }
   Serial.println("Conectado com sucesso!");  //Mensagem exibida no Monitor Serial
 
-  mqtt.setServer(BROKER_URL, BROKER_PORT);
+  mqtt.setServer(BROKER_URL, BROKER_PORT); //BROKER
   mqtt.setCallback(callback);  // definir callback antes de subscribes/reconexões
 
   String clientID = "S3_beatrizcercal";
   clientID += String(random(0xffff), HEX);
-  Serial.print("Conectando ao broker");
-  while (!mqtt.connect(clientID.c_str())) {
+  Serial.print("Conectando ao broker"); //Exibido no Monitor Serial
+  while (!mqtt.connect(clientID.c_str())) { //ENQUANTO
     Serial.print(".");
     delay(200);
   }
@@ -177,5 +177,5 @@ long lerDistancia(byte TRIGGER_PIN, byte ECHO_PIN) {  //Função de leitura de d
 }
 
 void connecttoBroker() {
-  Serial.println("Conectando ao broker...");
+  Serial.println("Conectando ao broker..."); //Exibido no Monitor Serial
 }
